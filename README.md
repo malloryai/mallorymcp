@@ -1,98 +1,62 @@
 # Mallory MCP Server
 
-[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![smithery badge](https://smithery.ai/badge/@malloryai/mallory-mcp-server)](https://smithery.ai/server/@malloryai/mallory-mcp-server)
 
-Mallory provides a robust source of cyber and threat intelligence. Use this MCP Server to enable your agents with real-time cyber threat intelligence and detailed information about vulnerabilities, threat actors, malware, techniques and other cyber-relevant entities and content. 
+Mallory provides a robust source of cyber and threat intelligence. This MCP server exposes the Mallory API to AI agents via the [malloryapi](https://github.com/malloryai/malloryapi) Python client, with tools for vulnerabilities, threat actors, malware, exploits, organizations, attack patterns, breaches, products, advisories, stories, mentions, search, and sources.
 
-## 📋 Prerequisites
+## Prerequisites
 
-- Python 3.13 or higher
-- [uv](https://github.com/astral-sh/uv) for dependency management (recommended)
+- Python 3.11 or higher
+- [uv](https://docs.astral.sh/uv/) for install and run (recommended)
+- A Mallory API key ([Mallory](https://mallory.ai))
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/malloryai/mallory-mcp-server.git
 cd mallory-mcp-server
+uv sync
 ```
 
-Set up a virtual environment and install dependencies:
+The server depends on the [malloryapi](https://pypi.org/project/malloryapi/) package from PyPI. `uv sync` creates a virtual environment and installs dependencies from `uv.lock`.
+
+### Configuration
+
+Set the API key (required). Optionally override the API base URL (e.g. for a local or staging endpoint):
 
 ```bash
-# Using uv (recommended)
-uv venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e .
-
-# Or using pip
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -e .
+export MALLORY_API_KEY=your_api_key_here
+# optional:
+export MALLORY_BASE_URL=https://api.mallory.ai/v1
 ```
 
-### Install Development Dependencies
+No `.env` file is required; the server reads from the environment. You can use a `.env` file and load it yourself (e.g. via your shell or process manager) if you prefer.
 
-For development work, install the optional dependencies:
+### Running the Server
 
 ```bash
-# Using uv
-uv pip install -e ".[lint,tools]"
-
-# Or using pip
-pip install -e ".[lint,tools]"
+uv run python -m mallory.mcp.app
 ```
 
-### Set Up Pre-commit Hooks
-
-This project uses pre-commit hooks to ensure code quality. Install them with:
+Or use the installed entry point:
 
 ```bash
-pre-commit install
-./scripts/install-commit-hook.sh
+uv run mallory-mcp-server
 ```
 
-## ⚙️ Configuration
+### Claude Desktop
 
-Create a `.env` file in the project root with the following variables:
-
-```
-APP_ENV=local
-MALLORY_API_KEY=your_api_key_here
-```
-
-## 🏃‍♂️ Running the Server
-
-### Direct Execution
-
-```bash
-python -m malloryai.mcp.app
-```
- or
-```bash
-uv run malloryai/mcp/app.py
-```
-
-### Via the Claude Desktop Configuration
-
-Add the following to your `claude_desktop_config.json`:
+Add to `claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "MalloryAI": {
-      "command": "/path/to/uv",
-      "args": [
-        "run",
-        "--python",
-        "/path/to/mcp-server/.venv/bin/python",
-        "/path/to/mcp-server/malloryai/mcp/app.py"
-      ],
+      "command": "mallory-mcp-server",
+      "args": [],
       "env": {
         "MALLORY_API_KEY": "your_api_key_here"
       }
@@ -101,71 +65,164 @@ Add the following to your `claude_desktop_config.json`:
 }
 ```
 
-## 📦 Project Structure
+Or run with uv (from the project directory):
 
-```
-.
-├── README.md
-├── app.py                  # Main application entry point
-├── malloryai/              # Main package
-│   ├── __init__.py
-│   └── mcp/                # MCP subpackage
-│       ├── __init__.py
-│       ├── config/         # Configuration modules
-│       ├── server/         # Server implementation
-│       ├── tools/          # Tool implementations
-│       └── utils/          # Utility functions
-├── pyproject.toml          # Project metadata and dependencies
-├── scripts/                # Utility scripts
-│   └── install-commit-hook.sh
+```json
+{
+  "mcpServers": {
+    "MalloryAI": {
+      "command": "uv",
+      "args": ["run", "mallory-mcp-server"],
+      "cwd": "/path/to/mallory-mcp-server",
+      "env": {
+        "MALLORY_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
 ```
 
-## 🧪 Development
+## Tools
 
-### Code Style
+The server exposes the following tools, backed by the Mallory API.
 
-This project uses:
-- [Black](https://github.com/psf/black) for code formatting
-- [isort](https://pycqa.github.io/isort/) for import sorting
-- [flake8](https://flake8.pycqa.org/) for linting
+### Vulnerabilities (7)
 
-Format your code with:
+| Tool                                     | Description                                             |
+| ---------------------------------------- | ------------------------------------------------------- |
+| `get_vulnerability`                      | Get a vulnerability by CVE ID or UUID                   |
+| `list_vulnerabilities`                   | List/search vulnerabilities with filters and pagination |
+| `list_trending_vulnerabilities`          | List vulnerabilities trending over 1d/7d/30d            |
+| `list_exploited_vulnerabilities`         | List vulnerabilities known to be exploited in the wild  |
+| `get_vulnerability_detection_signatures` | Detection signatures for a CVE                          |
+| `get_vulnerability_exploitations`        | Exploitation records for a CVE                          |
+| `get_vulnerability_configurations`       | Affected configurations (CPE) for a CVE                 |
+
+### Threat Actors (5)
+
+| Tool                               | Description                                     |
+| ---------------------------------- | ----------------------------------------------- |
+| `get_threat_actor`                 | Get a threat actor by UUID or name              |
+| `list_threat_actors`               | List/search threat actors                       |
+| `list_trending_threat_actors`      | List trending threat actors                     |
+| `list_mentioned_threat_actors`     | Recent threat actor mentions from intel sources |
+| `get_threat_actor_attack_patterns` | MITRE ATT&CK patterns for an actor              |
+
+### Malware (5)
+
+| Tool                          | Description                          |
+| ----------------------------- | ------------------------------------ |
+| `get_malware`                 | Get a malware entity by UUID or name |
+| `list_malware`                | List/search malware                  |
+| `list_trending_malware`       | List trending malware                |
+| `get_malware_vulnerabilities` | Vulnerabilities linked to a malware  |
+| `get_malware_attack_patterns` | MITRE ATT&CK patterns for a malware  |
+
+### Exploits (2)
+
+| Tool            | Description                          |
+| --------------- | ------------------------------------ |
+| `get_exploit`   | Get an exploit by UUID or identifier |
+| `list_exploits` | List/search exploits                 |
+
+### Organizations (4)
+
+| Tool                          | Description                              |
+| ----------------------------- | ---------------------------------------- |
+| `get_organization`            | Get an organization by UUID or name      |
+| `list_organizations`          | List/search organizations                |
+| `list_trending_organizations` | List trending organizations              |
+| `get_organization_breaches`   | Breaches associated with an organization |
+
+### Attack Patterns (4)
+
+| Tool                               | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `get_attack_pattern`               | Get an attack pattern (MITRE ATT&CK technique) by UUID or ID |
+| `list_attack_patterns`             | List/search attack patterns                                  |
+| `get_attack_pattern_threat_actors` | Threat actors associated with a technique                    |
+| `get_attack_pattern_malware`       | Malware associated with a technique                          |
+
+### Breaches (3)
+
+| Tool                       | Description                            |
+| -------------------------- | -------------------------------------- |
+| `get_breach`               | Get a breach by UUID or identifier     |
+| `list_breaches`            | List breaches                          |
+| `get_breach_organizations` | Organizations associated with a breach |
+
+### Products (3)
+
+| Tool                     | Description                              |
+| ------------------------ | ---------------------------------------- |
+| `get_product`            | Get a technology product by UUID or name |
+| `list_products`          | List/search technology products          |
+| `get_product_advisories` | Security advisories for a product        |
+
+### Advisories (3)
+
+| Tool                           | Description                                             |
+| ------------------------------ | ------------------------------------------------------- |
+| `get_advisory`                 | Get a technology product advisory by UUID or identifier |
+| `list_advisories`              | List technology product advisories                      |
+| `get_advisory_vulnerabilities` | Vulnerabilities associated with an advisory             |
+
+### Stories (3)
+
+| Tool                | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `get_story`         | Get an intelligence story by UUID or identifier |
+| `list_stories`      | List/search intelligence stories                |
+| `list_story_topics` | List available story topics                     |
+
+### Mentions (3)
+
+| Tool                            | Description                              |
+| ------------------------------- | ---------------------------------------- |
+| `list_mentions`                 | List recent mentions across entity types |
+| `list_mentions_actors`          | Recent threat actor mentions             |
+| `list_mentions_vulnerabilities` | Recent vulnerability mentions            |
+
+### Search and Sources (2)
+
+| Tool           | Description                                    |
+| -------------- | ---------------------------------------------- |
+| `search`       | Search across all entity types by query string |
+| `list_sources` | List intelligence sources in the platform      |
+
+## Project Structure
+
+```
+mallory/
+├── __init__.py
+└── mcp/
+    ├── __init__.py
+    ├── app.py              # Entry point (main, stdio transport)
+    ├── config/             # Env-based config (MALLORY_API_KEY, MALLORY_BASE_URL)
+    ├── decorator/          # API error handling for tools
+    ├── server/             # FastMCP server and tool loader
+    ├── tools/              # Tool modules (one per resource area)
+    └── utils/              # Serialization, debug
+pyproject.toml
+README.md
+```
+
+## Development
+
+### Lint
+
+Optional lint dependency uses [ruff](https://docs.astral.sh/ruff/):
 
 ```bash
-black .
-isort .
-flake8
+uv sync --extra lint
+uv run ruff check .
+uv run ruff format .
 ```
 
-### Commit Message Format
+### Commit Messages
 
-This project follows the conventional commit format. Each commit message should follow this pattern:
+Conventional commits preferred, e.g. `feat(tools): add malware tools`, `fix(server): client init with base_url`.
 
-```
-<type>[(scope)]: <description>
-```
+## License
 
-Where `type` is one of:
-- `feat` or `feature`: New feature
-- `fix`, `bugfix`, or `hotfix`: Bug fixes
-- `chore`: Regular maintenance tasks
-- `refactor`: Code changes that neither fix bugs nor add features
-- `docs`: Documentation only changes
-- `style`: Changes that don't affect the meaning of the code
-- `test`: Adding or correcting tests
-- `perf`: Performance improvements
-- `ci`: Changes to CI configuration
-- `build`: Changes to build system or dependencies
-- `revert`: Reverting previous commits
-
-Example: `feat(server): add new authentication method`
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+MIT.

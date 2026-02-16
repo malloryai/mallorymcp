@@ -25,5 +25,9 @@ env/
 # Logs
 *.log
 
+# PDM (project uses uv)
+.pdm-python
+pdm.lock
+
 # Miscellaneous
 .DS_Store
