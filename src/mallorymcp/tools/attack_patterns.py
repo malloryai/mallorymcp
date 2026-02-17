@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_attack_pattern(identifier: str) -> dict[str, Any]:
     Returns:
         Attack pattern record with name, description, references.
     """
-    return await client.attack_patterns.get(identifier)
+    return await get_client().attack_patterns.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_attack_patterns(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.attack_patterns.list(
+    resp = await get_client().attack_patterns.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -75,7 +75,7 @@ async def get_attack_pattern_threat_actors(
     Returns:
         Threat actors linked to this technique.
     """
-    return await client.attack_patterns.threat_actors(
+    return await get_client().attack_patterns.threat_actors(
         identifier,
         offset=offset,
         limit=limit,
@@ -101,7 +101,7 @@ async def get_attack_pattern_malware(
     Returns:
         Malware linked to this technique.
     """
-    return await client.attack_patterns.malware(
+    return await get_client().attack_patterns.malware(
         identifier,
         offset=offset,
         limit=limit,

@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 
 
 @mcp.tool()
@@ -20,4 +20,4 @@ async def search(q: str, **kwargs: Any) -> Any:
     Returns:
         Search results across entity types matching the query.
     """
-    return await client.search.query(q, **kwargs)
+    return await get_client().search.query(q, **kwargs)

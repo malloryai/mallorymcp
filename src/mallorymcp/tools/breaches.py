@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_breach(identifier: str) -> dict[str, Any]:
     Returns:
         Breach record with description, dates, related organizations.
     """
-    return await client.breaches.get(identifier)
+    return await get_client().breaches.get(identifier)
 
 
 @mcp.tool()
@@ -44,7 +44,7 @@ async def list_breaches(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.breaches.list(
+    resp = await get_client().breaches.list(
         offset=offset,
         limit=limit,
         sort=sort,
@@ -72,7 +72,7 @@ async def get_breach_organizations(
     Returns:
         Organizations linked to this breach.
     """
-    return await client.breaches.organizations(
+    return await get_client().breaches.organizations(
         identifier,
         offset=offset,
         limit=limit,

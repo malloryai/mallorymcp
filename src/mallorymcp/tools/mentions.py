@@ -1,7 +1,7 @@
 """MCP tools for entity mentions from intelligence sources."""
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -22,7 +22,7 @@ async def list_mentions(
     Returns:
         Paginated result with mention items.
     """
-    resp = await client.mentions.list(
+    resp = await get_client().mentions.list(
         offset=offset,
         limit=limit,
     )
@@ -46,7 +46,7 @@ async def list_mentions_actors(
     Returns:
         Paginated result with threat actor mention items.
     """
-    resp = await client.mentions.actors(
+    resp = await get_client().mentions.actors(
         offset=offset,
         limit=limit,
     )
@@ -70,7 +70,7 @@ async def list_mentions_vulnerabilities(
     Returns:
         Paginated result with vulnerability mention items.
     """
-    resp = await client.mentions.vulnerabilities(
+    resp = await get_client().mentions.vulnerabilities(
         offset=offset,
         limit=limit,
     )

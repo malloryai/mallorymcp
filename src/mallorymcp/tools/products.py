@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_product(identifier: str) -> dict[str, Any]:
     Returns:
         Product record with display_name, vendor, related advisories.
     """
-    return await client.products.get(identifier)
+    return await get_client().products.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_products(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.products.list(
+    resp = await get_client().products.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -75,7 +75,7 @@ async def get_product_advisories(
     Returns:
         Advisories linked to this product.
     """
-    return await client.products.advisories(
+    return await get_client().products.advisories(
         identifier,
         offset=offset,
         limit=limit,

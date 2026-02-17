@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_organization(identifier: str) -> dict[str, Any]:
     Returns:
         Organization record with display_name, description, related data.
     """
-    return await client.organizations.get(identifier)
+    return await get_client().organizations.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_organizations(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.organizations.list(
+    resp = await get_client().organizations.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -75,7 +75,7 @@ async def list_trending_organizations(
     Returns:
         Paginated result with trending organization items.
     """
-    resp = await client.organizations.trending(
+    resp = await get_client().organizations.trending(
         period=period,
         offset=offset,
         limit=limit,
@@ -102,7 +102,7 @@ async def get_organization_breaches(
     Returns:
         Breaches linked to this organization.
     """
-    return await client.organizations.breaches(
+    return await get_client().organizations.breaches(
         identifier,
         offset=offset,
         limit=limit,

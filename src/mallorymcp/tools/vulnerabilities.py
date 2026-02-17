@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_vulnerability(identifier: str) -> dict[str, Any]:
     Returns:
         Vulnerability record with description, CVSS/EPSS scores, timestamps.
     """
-    return await client.vulnerabilities.get(identifier)
+    return await get_client().vulnerabilities.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_vulnerabilities(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.vulnerabilities.list(
+    resp = await get_client().vulnerabilities.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -75,7 +75,7 @@ async def list_trending_vulnerabilities(
     Returns:
         Paginated result with trending vulnerability items.
     """
-    resp = await client.vulnerabilities.trending(
+    resp = await get_client().vulnerabilities.trending(
         period=period,
         offset=offset,
         limit=limit,
@@ -100,7 +100,7 @@ async def list_exploited_vulnerabilities(
     Returns:
         Paginated result with exploited vulnerability items.
     """
-    resp = await client.vulnerabilities.exploited(
+    resp = await get_client().vulnerabilities.exploited(
         offset=offset,
         limit=limit,
     )
@@ -122,7 +122,7 @@ async def get_vulnerability_detection_signatures(
     Returns:
         Detection signatures (source, method, description, etc.).
     """
-    return await client.vulnerabilities.detection_signatures(identifier)
+    return await get_client().vulnerabilities.detection_signatures(identifier)
 
 
 @mcp.tool()
@@ -140,7 +140,7 @@ async def get_vulnerability_exploitations(
     Returns:
         Exploitation records (begins_at, ends_at, count, detection refs).
     """
-    return await client.vulnerabilities.exploitations(identifier)
+    return await get_client().vulnerabilities.exploitations(identifier)
 
 
 @mcp.tool()
@@ -158,4 +158,4 @@ async def get_vulnerability_configurations(
     Returns:
         Configuration records (CPE, vendor, product, version ranges).
     """
-    return await client.vulnerabilities.configurations(identifier)
+    return await get_client().vulnerabilities.configurations(identifier)

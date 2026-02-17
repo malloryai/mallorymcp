@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_story(identifier: str) -> dict[str, Any]:
     Returns:
         Story record with title, summary, content, references, entities.
     """
-    return await client.stories.get(identifier)
+    return await get_client().stories.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_stories(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.stories.list(
+    resp = await get_client().stories.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -66,4 +66,4 @@ async def list_story_topics() -> Any:
     Returns:
         List of topic identifiers/names.
     """
-    return await client.stories.topics()
+    return await get_client().stories.topics()

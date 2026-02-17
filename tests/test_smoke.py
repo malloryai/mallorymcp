@@ -16,6 +16,14 @@ def test_server_initializes():
     assert mcp.name == "Mallory"
 
 
+def test_tools_registered():
+    """All tool modules register their tools."""
+    from mallorymcp.server.server import mcp
+
+    tools = mcp._tool_manager._tools
+    assert len(tools) >= 40
+
+
 def test_entry_point():
     """Entry point function exists."""
     from mallorymcp.app import main

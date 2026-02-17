@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_threat_actor(identifier: str) -> dict[str, Any]:
     Returns:
         Actor record with display_name, description, mentions, etc.
     """
-    return await client.threat_actors.get(identifier)
+    return await get_client().threat_actors.get(identifier)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def list_threat_actors(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.threat_actors.list(
+    resp = await get_client().threat_actors.list(
         filter=filter or None,
         offset=offset,
         limit=limit,
@@ -75,7 +75,7 @@ async def list_trending_threat_actors(
     Returns:
         Paginated result with trending threat actor items.
     """
-    resp = await client.threat_actors.trending(
+    resp = await get_client().threat_actors.trending(
         period=period,
         offset=offset,
         limit=limit,
@@ -104,7 +104,7 @@ async def list_mentioned_threat_actors(
     Returns:
         Paginated result with mention records (overview, source, dates).
     """
-    resp = await client.mentions.actors(
+    resp = await get_client().mentions.actors(
         offset=offset,
         limit=limit,
         sort=sort,
@@ -132,7 +132,7 @@ async def get_threat_actor_attack_patterns(
     Returns:
         Attack patterns linked to this actor.
     """
-    return await client.threat_actors.attack_patterns(
+    return await get_client().threat_actors.attack_patterns(
         identifier,
         offset=offset,
         limit=limit,

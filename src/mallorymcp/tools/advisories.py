@@ -3,7 +3,7 @@
 from typing import Any
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -20,7 +20,7 @@ async def get_advisory(identifier: str) -> dict[str, Any]:
     Returns:
         Advisory record with description, dates, related products/CVEs.
     """
-    return await client.advisories.get(identifier)
+    return await get_client().advisories.get(identifier)
 
 
 @mcp.tool()
@@ -44,7 +44,7 @@ async def list_advisories(
     Returns:
         Paginated result with items, total, offset, limit, has_more.
     """
-    resp = await client.advisories.list(
+    resp = await get_client().advisories.list(
         offset=offset,
         limit=limit,
         sort=sort,
@@ -72,7 +72,7 @@ async def get_advisory_vulnerabilities(
     Returns:
         Vulnerabilities linked to this advisory.
     """
-    return await client.advisories.vulnerabilities(
+    return await get_client().advisories.vulnerabilities(
         identifier,
         offset=offset,
         limit=limit,

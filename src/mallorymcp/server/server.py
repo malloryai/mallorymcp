@@ -10,16 +10,26 @@ from ..utils.debug import debug_log
 
 mcp = FastMCP("Mallory")
 
-client = AsyncMalloryApi(
-    api_key=MALLORY_API_KEY or None,
-    base_url=MALLORY_BASE_URL,
-)
+_client: AsyncMalloryApi | None = None
+
+
+def get_client() -> AsyncMalloryApi:
+    """Return the shared API client, creating it on first use."""
+    global _client
+    if _client is None:
+        _client = AsyncMalloryApi(
+            api_key=MALLORY_API_KEY or None,
+            base_url=MALLORY_BASE_URL,
+        )
+    return _client
 
 
 def load_tools():
     """Dynamically load all tool modules in the tools package."""
     tools_dir = Path(__file__).resolve().parent.parent / "tools"
-    for _, module_name, _ in pkgutil.iter_modules([str(tools_dir)]):
+    for _, module_name, _ in pkgutil.iter_modules(
+        [str(tools_dir)]
+    ):
         if module_name != "__init__":
             importlib.import_module(
                 f"mallorymcp.tools.{module_name}"

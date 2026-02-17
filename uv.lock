@@ -305,7 +305,7 @@ wheels = [
 
 [[package]]
 name = "mallorymcp"
-version = "0.0.post1.dev36"
+version = "0.3.0.post1.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "malloryapi" },

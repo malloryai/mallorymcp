@@ -1,7 +1,7 @@
 """MCP tools for intelligence source metadata."""
 
 from ..decorator.api import handle_api_errors
-from ..server.server import client, mcp
+from ..server.server import get_client, mcp
 from ..utils.serialize import paginated_to_dict
 
 
@@ -22,7 +22,7 @@ async def list_sources(
     Returns:
         Paginated result with source items (name, slug, type, etc.).
     """
-    resp = await client.sources.list(
+    resp = await get_client().sources.list(
         offset=offset,
         limit=limit,
     )
