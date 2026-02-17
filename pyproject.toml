@@ -21,7 +21,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "malloryapi>=0.1.1",
+    "malloryapi>=0.2.5",
     "mcp[cli]>=1.6.0",
 ]
 
