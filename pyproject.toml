@@ -5,7 +5,7 @@ description = "Mallory MCP Server — threat intelligence tools for AI agents"
 authors = [
     { name = "Mallory", email = "hello@mallory.ai" },
 ]
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 readme = "README.md"
 requires-python = ">=3.11"
 keywords = ["mallory", "mcp", "threat-intelligence", "cybersecurity"]

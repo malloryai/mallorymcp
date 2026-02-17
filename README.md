@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/mallorymcp.svg)](https://pypi.org/project/mallorymcp/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [Mallory](https://mallory.ai) provides a robust source of cyber and threat intelligence. This MCP server exposes the Mallory API to AI agents via the [malloryapi](https://github.com/malloryai/malloryapi) Python client, with tools for vulnerabilities, threat actors, malware, exploits, organizations, attack patterns, breaches, products, advisories, stories, mentions, search, and sources.
 
@@ -257,4 +257,4 @@ src/mallorymcp/
 
 ## License
 
-MIT.
+Apache 2.0.
