@@ -1,34 +1,32 @@
-from malloryai.sdk.api.v1.api import MalloryIntelligenceClient
-from mcp.server.fastmcp import FastMCP
 import importlib
 import pkgutil
 from pathlib import Path
 
-from ..utils.debug import debug_log
-from ..config import settings
+from malloryapi import AsyncMalloryApi
+from mcp.server.fastmcp import FastMCP
 
-# Create MCP server with a name
+from ..config import MALLORY_API_KEY, MALLORY_BASE_URL
+from ..utils.debug import debug_log
+
 mcp = FastMCP("MalloryAI")
 
-malloryai_client = MalloryIntelligenceClient(api_key=settings.MALLORY_API_KEY)
+client = AsyncMalloryApi(
+    api_key=MALLORY_API_KEY or None,
+    base_url=MALLORY_BASE_URL,
+)
 
 
 def load_tools():
-    """Dynamically load all tool modules in the tools package"""
-    # Get the tools directory
+    """Dynamically load all tool modules in the tools package."""
     tools_dir = Path(__file__).resolve().parent.parent / "tools"
-
-    # Find all Python modules in the tools directory
     for _, module_name, _ in pkgutil.iter_modules([str(tools_dir)]):
-        # Skip the __init__ module
         if module_name != "__init__":
-            # Import the module
-            importlib.import_module(f"malloryai.mcp.tools.{module_name}")
+            importlib.import_module(f"mallory.mcp.tools.{module_name}")
             debug_log(f"Loaded tool: {module_name}")
 
 
 def initialize_server():
-    """Initialize the server by loading all tools"""
+    """Initialize the server by loading all tools."""
     try:
         debug_log("Starting tool loading...")
         load_tools()

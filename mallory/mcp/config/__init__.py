@@ -1,0 +1,3 @@
+from .settings import MALLORY_API_KEY, MALLORY_BASE_URL
+
+__all__ = ["MALLORY_API_KEY", "MALLORY_BASE_URL"]
