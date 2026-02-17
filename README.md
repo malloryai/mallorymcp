@@ -8,6 +8,11 @@
 
 Once connected, your AI assistant (Cursor, Claude Desktop, or another MCP client) can look up CVEs, threat actors, malware, and more directly from Mallory — no copy-pasting from the dashboard.
 
+## Prerequisites
+
+- Python 3.11 or higher
+- A Mallory API key ([mallory.ai](https://mallory.ai))
+
 ## Quick Start
 
 ### 1. Set your API key
@@ -20,80 +25,11 @@ export MALLORY_API_KEY=your_api_key_here
 
 Reload your shell (or run `source ~/.zshrc`) so the variable is available.
 
-Optionally override the API base URL:
+### 2. Add to your AI client
 
-```bash
-export MALLORY_BASE_URL=https://api.mallory.ai/v1
-```
+Add the server to your MCP client config. Pick one of the options below.
 
-### 2. Install
-
-```bash
-pip install mallorymcp
-```
-
-Or with uv:
-
-```bash
-uv pip install mallorymcp
-```
-
-### 3. Add to your AI client
-
-See [Client Configuration](#client-configuration) below.
-
-### 4. Start using it
-
-Ask your assistant to query Mallory:
-
-- _"Look up CVE-2024-1234 and summarize the risk."_
-- _"List threat actors trending in the last 7 days."_
-- _"Find vulnerabilities that are known to be exploited."_
-- _"Search for intelligence on APT28."_
-- _"What malware is associated with technique T1566?"_
-
-The assistant calls the MCP tools automatically.
-
-## Client Configuration
-
-### Cursor
-
-Add to your Cursor MCP config file (e.g. `~/.cursor/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "Mallory": {
-      "command": "mallorymcp"
-    }
-  }
-}
-```
-
-Or in Cursor, open **Settings → MCP** and add a server:
-
-| Field   | Value        |
-| ------- | ------------ |
-| Name    | Mallory      |
-| Command | `mallorymcp` |
-
-### Claude Desktop
-
-Add to `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "Mallory": {
-      "command": "mallorymcp"
-    }
-  }
-}
-```
-
-### Running with uvx (no install)
-
-If you prefer not to install the package globally, you can run it directly with `uvx`:
+**Cursor** — add to `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -106,7 +42,61 @@ If you prefer not to install the package globally, you can run it directly with 
 }
 ```
 
-This downloads and runs the package in an isolated environment each time.
+**Claude Desktop** — add to `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "Mallory": {
+      "command": "uvx",
+      "args": ["mallorymcp"]
+    }
+  }
+}
+```
+
+> `uvx` downloads and runs the package automatically — no install step needed. If you prefer to install it yourself, see [Alternative: pip install](#alternative-pip-install) below.
+
+### 3. Restart your AI client and start using it
+
+Ask your assistant to query Mallory:
+
+- _"Look up CVE-2024-1234 and summarize the risk."_
+- _"List threat actors trending in the last 7 days."_
+- _"Find vulnerabilities that are known to be exploited."_
+- _"Search for intelligence on APT28."_
+- _"What malware is associated with technique T1566?"_
+
+The assistant calls the MCP tools automatically — you don't need to invoke tool names yourself.
+
+> **Note:** `mallorymcp` is an MCP server that communicates via JSON-RPC over stdio. It's designed to be launched by your AI client, not run interactively from a terminal.
+
+## Alternative: pip install
+
+If you prefer installing the package rather than using `uvx`:
+
+```bash
+pip install mallorymcp
+```
+
+Then reference the command directly in your config:
+
+```json
+{
+  "mcpServers": {
+    "Mallory": {
+      "command": "mallorymcp"
+    }
+  }
+}
+```
+
+## Configuration
+
+| Environment Variable | Required | Description               | Default                     |
+| -------------------- | -------- | ------------------------- | --------------------------- |
+| `MALLORY_API_KEY`    | Yes      | Your Mallory API key      | —                           |
+| `MALLORY_BASE_URL`   | No       | Override the API base URL | `https://api.mallory.ai/v1` |
 
 ## Tools
 
@@ -251,7 +241,7 @@ src/mallorymcp/
 
 ### Releasing
 
-1. Tag a release: `git tag v0.3.0 && git push --tags`
+1. Tag a release: `git tag v0.4.0 && git push --tags`
 2. Create a GitHub release from the tag
 3. GitHub Actions builds and publishes to PyPI via trusted publisher
 
