@@ -1,7 +1,7 @@
 [project]
 name = "mallorymcp"
 dynamic = ["version"]
-description = "Mallory MCP Server — threat intelligence tools for AI agents"
+description = "Deprecated — use the Mallory Remote MCP service: https://docs.mallory.ai/use/agent/mcp"
 authors = [
     { name = "Mallory", email = "hello@mallory.ai" },
 ]
@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 keywords = ["mallory", "mcp", "threat-intelligence", "cybersecurity"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 7 - Inactive",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
@@ -20,23 +20,20 @@ classifiers = [
     "Topic :: Security",
     "Typing :: Typed",
 ]
-dependencies = [
-    "malloryapi>=0.2.5",
-    "mcp[cli]>=1.26.0",
-]
+dependencies = []
 
 [project.scripts]
 mallorymcp = "mallorymcp.app:main"
 
 [project.urls]
 Homepage = "https://mallory.ai"
-Documentation = "https://github.com/malloryai/mallorymcp#readme"
+Documentation = "https://docs.mallory.ai/use/agent/mcp"
 Repository = "https://github.com/malloryai/mallorymcp"
 Issues = "https://github.com/malloryai/mallorymcp/issues"
 
 [project.optional-dependencies]
 lint = ["ruff>=0.8"]
-test = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+test = ["pytest>=8.0"]
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
@@ -59,7 +56,6 @@ packages = ["src/mallorymcp"]
 include = ["/src/mallorymcp", "/tests", "README.md", "LICENSE.md"]
 
 [tool.pytest.ini_options]
-asyncio_mode = "auto"
 testpaths = ["tests"]
 
 [tool.ruff]

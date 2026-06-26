@@ -1,4 +1,7 @@
-"""Basic smoke tests for the mallorymcp package."""
+"""Basic smoke tests for the deprecated mallorymcp package."""
+
+import subprocess
+import sys
 
 
 def test_import():
@@ -8,24 +11,28 @@ def test_import():
     assert mallorymcp.__version__
 
 
-def test_server_initializes():
-    """Server initializes and loads all tools."""
-    from mallorymcp.server.server import load_tools, mcp
-
-    load_tools()
-    assert mcp.name == "Mallory"
-
-
-def test_tools_registered():
-    """All tool modules register their tools."""
-    from mallorymcp.server.server import mcp
-
-    tools = mcp._tool_manager._tools
-    assert len(tools) >= 40
-
-
 def test_entry_point():
     """Entry point function exists."""
     from mallorymcp.app import main
 
     assert callable(main)
+
+
+def test_deprecation_notice_points_to_docs():
+    """The deprecation message points users to the Remote MCP docs."""
+    from mallorymcp.app import DOCS_URL, MESSAGE
+
+    assert DOCS_URL == "https://docs.mallory.ai/use/agent/mcp"
+    assert DOCS_URL in MESSAGE
+    assert "deprecated" in MESSAGE
+
+
+def test_cli_prints_deprecation_and_exits_nonzero():
+    """Running the CLI prints the notice and exits non-zero."""
+    result = subprocess.run(
+        [sys.executable, "-m", "mallorymcp.app"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0
+    assert "https://docs.mallory.ai/use/agent/mcp" in result.stderr

@@ -7,6 +7,9 @@ wheels/
 *.egg-info/
 src/mallorymcp/_version.py
 
+# PDM
+.pdm-python
+
 # Virtual environments
 .venv/
 venv/

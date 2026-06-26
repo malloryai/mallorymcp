@@ -1,4 +1,8 @@
-"""Mallory MCP Server — threat intelligence tools for AI agents."""
+"""Mallory MCP Server (deprecated).
+
+Replaced by the hosted Mallory Remote MCP service:
+https://docs.mallory.ai/use/agent/mcp
+"""
 
 try:
     from mallorymcp._version import __version__
